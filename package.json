@@ -1,0 +1,31 @@
+{
+  "name": "awssnap",
+  "version": "0.0.1",
+  "description": "AWS Periodic snapshotting and cleanup",
+  "main": "awssnap.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "awssnap": "./bin/awssnap.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Peerby/awssnap.git"
+  },
+  "keywords": [
+    "amazon",
+    "aws",
+    "periodic",
+    "snapshot"
+  ],
+  "dependencies": {
+    "winston": "*",
+    "async": "*",
+    "aws-sdk": "*",
+    "commander": "*",
+    "numpad": "*"
+  },
+  "author": "Peerby <dev@peerby.com>",
+  "license": "MIT"
+}
