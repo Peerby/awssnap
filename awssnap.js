@@ -3,8 +3,11 @@
 var AWS = require('aws-sdk');
 var numpad = require('numpad');
 
-function createSnapshot(params, done) {
 
+/**
+ * Exported functions
+ */
+function createSnapshot(params, done) {
   if (!params.volume) return done('no volume specified');
   if (!params.description) return done('no description specified');
   if (!params.region) return done('no region specified');
@@ -26,7 +29,7 @@ function createSnapshot(params, done) {
 
 
 function purgeSnapshot(state, periodInfo, done) {
-
+  return done(new Error('notImplementedYet'));
 }
 
 

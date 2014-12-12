@@ -3,7 +3,6 @@
 var fs = require('fs');
 var util = require('util');
 
-
 var async = require('async');
 var cmd = require('commander');
 var log = require('winston');
@@ -20,7 +19,6 @@ cmd.option('-l, --loglevel [loglevel]', 'config file to use');
 cmd.option('-d  --dryrun, do dry run');
 cmd.parse(process.argv);
 if (!cmd.period) cmd.help();
-// Set defaults
 cmd.config = cmd.config || process.cwd() + '/awssnap.json';
 cmd.loglevel = process.env.NODE_LOGLEVEL || cmd.loglevel || 'info';
 
@@ -36,12 +34,13 @@ log.verbose('awssnap arguments', {
   dryRun: cmd.dryRun
 });
 
+
 /**
  * Main
  */
 async.waterfall([readConfig, createSnapshots], function (err, state) {
   if (err) throw err;
-  console.log('done');
+  log.info('done');
 });
 
 
@@ -50,7 +49,7 @@ async.waterfall([readConfig, createSnapshots], function (err, state) {
  */
 function readConfig(done) {
   var fileName = cmd.config;
-  log.verbose('Reading configuration file', {filename: fileName});
+  log.verbose('Reading configuration', {filename: fileName});
 
   fs.readFile(fileName, {encoding: 'UTF8'}, function (err, contents) {
     if (err) return done(err);
@@ -62,8 +61,6 @@ function readConfig(done) {
     catch (err) {
       return done(err);
     }
-
-    // console.log('** config', jsonData);
     return done(null, {config: jsonData});
   });
 }
@@ -78,8 +75,6 @@ function createSnapshots(state, done) {
   }
 
   async.each(Object.keys(config.volumes), createSnapshot, done);
-  return;
-
   function createSnapshot(volume, cb) {
     var params = {
       region: config.volumes[volume].region,
@@ -87,15 +82,19 @@ function createSnapshots(state, done) {
       description: config.volumes[volume].description +' '+ cmd.period,
       dryRun: cmd.dryrun
     };
-    log.info('creating snapshot', params);
+    log.verbose('creating snapshot', params);
 
     awssnap.createSnapshot(params, function (err, result) {
-      if (err) return done(err);
+      if (err) return cb(err);
 
-      log.debug('created snapshot', params);
-      return done(null, state);
+      log.info('created snapshot', {
+        id: result.SnapshotId,
+        volume: result.VolumeId,
+        time: result.StartTime,
+        size: result.VolumeSize,
+        encrypted: result.Encrypted
+      });
+      return cb(null, state);
     });
   }
 }
-
-
