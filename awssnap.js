@@ -46,8 +46,8 @@ function setRegion(region) {
 
 function getTimeString() {
   var d = new Date();
-  return d.getFullYear() + numpad(d.getMonth()) + numpad(d.getDay()+1) + '-' +
-        numpad(d.getHours()) + numpad(d.getMinutes());
+  return d.getFullYear() + numpad(d.getMonth()+1) + numpad(d.getUTCDate()) + '-' +
+                           numpad(d.getHours()) + numpad(d.getMinutes());
 }
 
 
